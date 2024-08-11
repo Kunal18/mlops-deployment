@@ -1,7 +1,9 @@
 # MLOps Deployment
 
 This repository contains the setup and configuration files for deploying an MLOps pipeline using FastAPI and Docker on AWS EC2.
-Each instance is running the ELK stack as well.
+Each instance is running the ELK stack as well. We have implemented CI-CD using Git Actions that get triggered whenever code is pushed on the main branch. The complicated CI-CD workflow orchrestration is outlined in the GitHub workflows folder. Incase of any issues please let us know as the deployment in AWS revolves a multi step process in multiple services from configuring the Security Groups on the VPC to allow traffic to setting up the Scaling rules in ASG. 
+
+The below explanation is deployment of the services on AWS.
 
 ## Project Structure
 
@@ -21,6 +23,10 @@ mlops-deployment/
 ├── heroku.yml
 └── requirements.txt
 ```
+## System Design for the Application
+
+![System Design](https://github.com/shivanshvermaa/mlops-deployment/assets/37590846/431dfdc7-9d44-4fcc-96c4-9049e38c3c3e)
+
 
 ## Prerequisites
 
@@ -28,7 +34,9 @@ mlops-deployment/
 - Docker
 - Python 3.8+
 
-## Setup
+## Setup Locally
+
+Presuming you have Docker installed.
 
 1. **Clone the repository:**
 
@@ -36,16 +44,8 @@ mlops-deployment/
     git clone https://github.com/shivanshvermaa/mlops-deployment.git
     cd mlops-deployment
     ```
-
-2. **Install dependencies:**
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## Running Locally
-
-1. **Build and run Docker containers:**
+    
+2. **Build and run Docker containers:**
 
     ```bash
     docker-compose up --build
@@ -53,7 +53,9 @@ mlops-deployment/
 
 2. **Access the FastAPI application:**
 
-    Open your browser and navigate to `http://localhost:8000`
+    Open your browser and navigate to `http://localhost:80` to see if the API is working and
+
+   Navigate to `http://localhost/docs` to see the documentation for the hosted API.
 
 ## Deployment to AWS EC2
 
@@ -99,17 +101,10 @@ AWS_ACCESS_KEY_ID=<ACCESS_KEY>
 2. **Install Docker:**
 
     ```bash
-    sudo apt-get install -y docker.io
+    curl -fsSL https://get.docker.com -o get-docker.sh
     ```
 
-3. **Start Docker and enable it to start on boot:**
-
-    ```bash
-    sudo systemctl start docker
-    sudo systemctl enable docker
-    ```
-
-4. **Install Docker Compose:**
+3. **Install Docker Compose:**
 
     ```bash
     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -124,14 +119,21 @@ AWS_ACCESS_KEY_ID=<ACCESS_KEY>
     git clone https://github.com/shivanshvermaa/mlops-deployment.git
     cd mlops-deployment
     ```
+2. **Create the .env file just outside the `mlops-development` folder **
+   ```
+    AWS_S3_OBJECT_NAME=<OBJECT_NAME>
+    AWS_S3_BUCKET_NAME=<BUCKET_NAME>
+    AWS_SECRET_KEY=<SECRET_KEY>
+    AWS_ACCESS_KEY_ID=<ACCESS_KEY>
+    ```
 
-2. **Build and run Docker containers:**
+4. **Build and run Docker containers:**
 
     ```bash
     sudo docker-compose up --build -d
     ```
 
-3. **Access the FastAPI application:**
+5. **Access the FastAPI application:**
 
     Open your browser and navigate to `http://your-ec2-public-dns:80` to see the health status
    
